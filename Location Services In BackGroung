@@ -1,0 +1,15 @@
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+   
+    
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;//or whatever class you have for managing location
+    [locationManager startUpdatingLocation];
+    
+    NSLog(@"yes");
+    __block UIBackgroundTaskIdentifier background_task;
+    background_task = [application beginBackgroundTaskWithExpirationHandler:^ {
+        //This code block is execute when the application’s
+        //remaining background time reaches ZERO.
+    }];
+
+}
