@@ -1,0 +1,25 @@
+- (IBAction)btnCallNow:(id)sender {
+    
+   phoneNumber = [@"tel://" stringByAppendingString:@"123456789"];
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:phoneNumber]])
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Call Now!" message:nil delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        [alert show];
+
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Sorry!" message:@"unable to make call right now." delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+        if (buttonIndex == 1)
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
+        }
+   
+    
+}
