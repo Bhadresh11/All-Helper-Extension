@@ -1,0 +1,20 @@
+
+from
+
+[[NSNotificationCenter defaultCenter]postNotificationName:@"Notification_name" object:nil userInfo:data];
+
+
+to
+
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(TimeDurationDisplay:)
+                                                 name:@Notif_Send_Time_Duration
+                                               object:nil];
+
+
+-(void)TimeDurationDisplay:(NSNotificationCenter *)info
+{
+    NSLog(@"Duration:%@",info);
+    
+}
