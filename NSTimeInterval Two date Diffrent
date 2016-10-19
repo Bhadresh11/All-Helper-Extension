@@ -1,0 +1,20 @@
+	  NSString *dateStr = @“”;   
+        NSDate *dateNow =[NSDate date];
+        NSDateFormatter *ddf = [[NSDateFormatter alloc]init];
+        [ddf setDateFormat:@"dd-MM-yyyy hh:mm a"];
+        NSDate *ariveDate = [ddf dateFromString: dateStr];
+         //    date = "17-10-2016 12:50";
+       
+        NSTimeInterval secondsBetween = [ariveDate timeIntervalSinceDate:dateNow];
+        
+        if (secondsBetween < 3600)
+        {
+            cell.btnArriveNow.enabled = YES;
+            
+        }
+        else
+        {
+            cell.btnArriveNow.enabled = NO;
+            cell.btnArriveNow .backgroundColor = [UIColor darkGrayColor];
+            
+        }
