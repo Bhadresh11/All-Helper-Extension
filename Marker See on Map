@@ -1,0 +1,257 @@
+.h File
+#import <UIKit/UIKit.h>
+#import <GoogleMaps/GoogleMaps.h>
+#import <CoreLocation/CoreLocation.h>
+#import "AFNetworking.h"
+#import "AppDelegate.h"
+#import "SendRequestVc.h"
+
+
+@interface MarkerSeeonMapVC : UIViewController<CLLocationManagerDelegate,GMSMapViewDelegate>
+{
+    BOOL IsGetLocation;
+    GMSCameraPosition * Camera;
+    IBOutlet GMSMapView *GMapView;
+    CLLocationManager *currentLocation;
+    NSString *strCurrentUserAddress;
+    float latitude;
+    float longitude;
+    float zoomMap;
+    GMSMarker *marker;
+    
+    NSMutableArray *ArrGetOnlineWalker;
+    
+    NSDictionary *tapMarkerUserData;
+
+}
+
+- (IBAction)btnRefreshMap:(id)sender;
+
+
+@end
+
+
+.M File
+
+#import "SeeonMapVC.h"
+
+@interface SeeonMapVC ()
+
+@end
+
+@implementationSeeonMapVC
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    zoomMap= 17.0;
+
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    NSString *string = @ApiUrl;
+    NSLog(@"hndjkfhnbdjkfhdjbvnbvnbvnbvksfnbvnbvnbvnhdjksfhdjksfh");
+
+    NSDictionary *params = @{@"request":@"getDatar"};
+    AFHTTPRequestOperationManager *AFHTTPmanager = [AFHTTPRequestOperationManager manager];
+    [AFHTTPmanager POST:string parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"responseObject:%@",responseObject[@"data"]);
+        NSArray *ra = responseObject[@"data"];
+        ArrGetOnlineUser = [[NSMutableArray alloc]init];
+        
+        GMSCameraPosition *camera = nil;
+        
+        camera = [GMSCameraPosition cameraWithLatitude:currentLocation.location.coordinate.latitude
+                                             longitude:currentLocation.location.coordinate.longitude
+                                                  zoom:zoomMap];
+        
+        GMSMapView *GMapView1 = [GMSMapView mapWithFrame:GMapView.bounds camera:camera];
+       
+        
+        GMapView1.delegate = self;
+
+        GMapView1.myLocationEnabled = YES;
+        
+        GMapView1.settings.compassButton = YES;
+        GMapView1.settings.myLocationButton = YES;
+
+        for(int i = 0; i < ra.count; i++)
+        {
+            
+            CLLocationCoordinate2D position = { [[[ra objectAtIndex:i]valueForKey:@"latitude"] floatValue], [[[ra objectAtIndex:i]valueForKey:@"longitude"] floatValue] };
+            marker = [GMSMarker markerWithPosition:position];
+            marker.title = [[ra objectAtIndex:i]valueForKey:@"name"];
+            marker.appearAnimation = YES;
+            marker.flat = YES;
+            marker.snippet = [[ra objectAtIndex:i]valueForKey:@"rate"];
+            marker.userData = [ra objectAtIndex:i];
+            marker.map = GMapView1;
+        }
+        
+        [GMapView addSubview:GMapView1];
+        
+        
+        
+        
+    }
+          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              NSLog(@"error operation:%@",operation.responseObject);
+              if ([operation.responseObject[@"msg"]isEqualToString:@"There is no data exist"])
+              {
+                  UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Sorry !" message:@"Not Walker Found." delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+                  [alert show];
+                  [GMapView clear];
+              }
+              
+          }];
+    [self checklocation:currentLocation];
+
+}
+
+- (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker1 {
+    // your code
+    NSLog(@"marker Userdata:%@",marker1.userData);
+    tapMarkerUserData = marker1.userData;
+    [self performSegueWithIdentifier:@"RequestVc" sender:self];
+}
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"RequestVc"])
+    {
+        SendRequestVc *vc =[segue destinationViewController];
+        vc.SelectedWalkerData =tapMarkerUserData;
+        vc.CurrentAddress = strCurrentUserAddress;
+    }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations {
+    // If it's a relatively recent event, turn off updates to save power.
+    CLLocation* location = [locations lastObject];
+    latitude=location.coordinate.latitude;
+    longitude=location.coordinate.longitude;
+
+    if (latitude > 0 && IsGetLocation == NO)
+    {
+        [self gteCurrentLocation:location];
+        
+        [self LatLongToAddress:location];
+    }
+    NSDate* eventDate = location.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (fabs(howRecent) < 15.0) {
+        NSLog(@"location :%@",location);
+    }
+}
+-(void)LatLongToAddress:(CLLocation *)Location
+{
+    NSString *GmsMapApiKey =@GMSMAPAPIKey;
+    NSString *lat = [NSString stringWithFormat:@"%f",Location.coordinate.latitude];
+    NSString *Long = [NSString stringWithFormat:@"%f",Location.coordinate.longitude];
+    
+    NSString *strLink =[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?latlng=%@,%@&key=%@",lat,Long,GmsMapApiKey];
+
+    AFHTTPRequestOperationManager *AFHTTPmanager = [AFHTTPRequestOperationManager manager];
+    [AFHTTPmanager POST:strLink parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"responseObject:%@", [[[responseObject valueForKey:@"results"] objectAtIndex:0]valueForKey:@"formatted_address"]);
+        strCurrentUserAddress = [[[responseObject valueForKey:@"results"] objectAtIndex:0]valueForKey:@"formatted_address"];
+        //formatted_address
+    }
+     
+                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"error operation:%@",operation.responseObject);
+                    
+                    
+                }];
+    
+}
+-(void)gteCurrentLocation:(CLLocation *)loca
+{
+    IsGetLocation = YES;
+    Camera = [GMSCameraPosition cameraWithLatitude:loca.coordinate.latitude
+                                         longitude:loca.coordinate.longitude
+                                              zoom:zoomMap];
+    [GMapView animateToCameraPosition:Camera];
+
+}
+-(void)checklocation:(CLLocationManager *)location
+{
+    if (location.location.coordinate.latitude == 0 && location.location.coordinate.longitude == 0)
+    {
+        NSLog(@"gotch");
+        currentLocation = [[CLLocationManager alloc] init];
+        [currentLocation requestWhenInUseAuthorization];
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8) {
+            [currentLocation requestAlwaysAuthorization];
+        }
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9) {
+            [currentLocation requestAlwaysAuthorization];
+        }
+        [currentLocation startUpdatingLocation];
+        [currentLocation startMonitoringSignificantLocationChanges];
+        currentLocation.delegate=self;
+        
+        GMapView.myLocationEnabled = YES;
+        
+        GMapView.settings.compassButton = YES;
+        GMapView.settings.myLocationButton = YES;
+
+        
+        if (currentLocation.location.coordinate.latitude == 0 && currentLocation.location.coordinate.longitude == 0)
+        {
+            NSLog(@"location not fatch");
+        }
+        else
+        {
+            Camera = [GMSCameraPosition cameraWithLatitude: currentLocation.location.coordinate.latitude
+                                                 longitude: currentLocation.location.coordinate.longitude
+                                                      zoom:zoomMap];
+            latitude=location.location.coordinate.latitude;
+            longitude=location.location.coordinate.longitude;
+        }
+    }
+    else
+    {
+        [currentLocation startUpdatingLocation];
+        latitude=location.location.coordinate.latitude;
+        longitude=location.location.coordinate.longitude;
+    }
+}
+
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
+    
+    NSLog(@"%@",error.userInfo);
+    if([CLLocationManager locationServicesEnabled]){
+        
+        NSLog(@"Location Services Enabled");
+        
+        if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied){
+            UIAlertView    *alert = [[UIAlertView alloc] initWithTitle:@"App Permission Denied"
+                                                               message:@"To re-enable, please go to Settings and turn on Location Service for this app."
+                                                              delegate:nil
+                                                     cancelButtonTitle:@"OK"
+                                                     otherButtonTitles:nil];
+            [alert show];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    latitude=newLocation.coordinate.latitude;
+    longitude=newLocation.coordinate.longitude;
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:newLocation.coordinate.latitude
+                                                            longitude:newLocation.coordinate.longitude
+                                                                 zoom:zoomMap];
+    [GMapView animateToCameraPosition:camera];
+}
+
+- (IBAction)btnRefreshMap:(id)sender {
+    [self viewWillAppear:YES];
+}
+@end
