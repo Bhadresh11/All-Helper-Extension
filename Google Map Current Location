@@ -1,0 +1,153 @@
+.h File
+
+#import <UIKit/UIKit.h>
+#import <GoogleMaps/GoogleMaps.h>
+#import <CoreLocation/CoreLocation.h>
+#import "AFNetworking.h"
+#import "AppDelegate.h"
+
+@interface PickLocationVc : UIViewController<GMSMapViewDelegate,CLLocationManagerDelegate>
+{
+    BOOL IsGetLocation;
+    GMSCameraPosition * Camera;
+    IBOutlet GMSMapView *GMapView;
+    CLLocationManager *currentLocation;
+    NSString *strCurrentUserAddress;
+    float latitude;
+    float longitude;
+    float zoomMap;
+    GMSMarker *marker;
+    
+    
+    IBOutlet UILabel *lblAddress;
+    
+}
+- (IBAction)btnCancelPickLocation:(id)sender;
+- (IBAction)btnLocationPickDone:(id)sender;
+
+
+
+
+.M file
+
+
+#import "PickLocationVc.h"
+
+@interface PickLocationVc ()
+
+@end
+
+@implementation PickLocationVc
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    zoomMap= 17.0;
+    GMapView.delegate = self;
+    GMapView.myLocationEnabled = YES;
+    GMapView.settings.compassButton = YES;
+    GMapView.settings.myLocationButton = YES;
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"IsPickLocation"];
+    lblAddress.layer.borderColor = [UIColor darkGrayColor].CGColor;
+    lblAddress.layer.borderWidth = 3.0;
+    
+    currentLocation = [[CLLocationManager alloc] init];
+
+    [currentLocation startMonitoringSignificantLocationChanges];
+    currentLocation.delegate=self;
+    
+    [currentLocation startUpdatingLocation];
+    
+    GMapView.myLocationEnabled = YES;
+    GMapView.settings.compassButton = YES;
+    GMapView.settings.myLocationButton = YES;
+
+}
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations {
+    // If it's a relatively recent event, turn off updates to save power.
+    CLLocation* location = [locations lastObject];
+    latitude=location.coordinate.latitude;
+    longitude=location.coordinate.longitude;
+    
+    if (latitude > 0 && IsGetLocation == NO)
+    {
+        [self checklocation:manager];
+    }
+    NSDate* eventDate = location.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (fabs(howRecent) < 15.0) {
+        // NSLog(@"location :%@",location);
+    }
+}
+-(void)checklocation:(CLLocationManager *)loca
+{
+    IsGetLocation = YES;
+    Camera = [GMSCameraPosition cameraWithLatitude:loca.location.coordinate.latitude
+                                         longitude:loca.location.coordinate.longitude
+                                              zoom:zoomMap];
+    [GMapView animateToCameraPosition:Camera];
+    
+    
+    
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)btnCancelPickLocation:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)btnLocationPickDone:(id)sender {
+    [[NSUserDefaults standardUserDefaults]setValue:lblAddress.text forKey:@"IsPickLocation"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+}
+
+- (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position;
+{
+    double lati = mapView.camera.target.latitude;
+    double longi = mapView.camera.target.longitude;
+    CLLocationCoordinate2D posit = { lati, longi };
+    marker = [GMSMarker markerWithPosition:posit];
+    [GMapView clear];
+    marker.title = @"HI";
+    marker.appearAnimation = YES;
+    marker.flat = YES;
+    marker.snippet = @"Hello";
+    marker.map = GMapView;
+    
+    NSString *GmsMapApiKey =@GMSMAPAPIKey;
+    NSString *lat = [NSString stringWithFormat:@"%f",lati];
+    NSString *Long = [NSString stringWithFormat:@"%f",longi];
+    
+    NSString *strLink =[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?latlng=%@,%@&key=%@",lat,Long,GmsMapApiKey];
+    
+    AFHTTPRequestOperationManager *AFHTTPmanager = [AFHTTPRequestOperationManager manager];
+    [AFHTTPmanager POST:strLink parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSArray *sa =[responseObject valueForKey:@"results"];
+        if (sa.count > 0)
+        {
+            lblAddress.text = [[[responseObject valueForKey:@"results"] objectAtIndex:0]valueForKey:@"formatted_address"];
+        }
+        else
+        {
+            lblAddress.text = @" Address not Found";
+        }
+        //formatted_address
+    }
+     
+                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"error operation:%@",operation.responseObject);
+                    
+                    
+                }];
+    
+   
+
+}
+@end
