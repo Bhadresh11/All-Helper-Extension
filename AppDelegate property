@@ -1,0 +1,2 @@
+programmatically disable auto turning off the display
+[UIApplication sharedApplication].idleTimerDisabled = YES;
