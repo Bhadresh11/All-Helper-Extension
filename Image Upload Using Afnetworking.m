@@ -116,7 +116,6 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     
     //NSLog(@"Index = %d - Title = %@", buttonIndex, [actionSheet buttonTitleAtIndex:buttonIndex]);
-    [self dismissViewControllerAnimated:YES completion:nil];
     
     if (buttonIndex == 1)
     {
