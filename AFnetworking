@@ -1,0 +1,3 @@
+//set image using URL and PlaceHolder
+#import "UIImageView+AFNetworking.h"
+    [ImageVieewName setImageWithURL:[NSURL URLWithString:@"ImagePathString"] placeholderImage:[UIImage imageNamed:@"UserAvtar"]];
