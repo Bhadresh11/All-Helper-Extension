@@ -1,0 +1,130 @@
+#import <sqlite3.h>
+
+
+-(BOOL)CheckandCreateDatabase
+{
+    NSArray *array=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    NSString *filePath=[array objectAtIndex:0];
+    
+    filePath =[filePath stringByAppendingPathComponent:DataBaseName];
+    NSLog(@"First of create this dbpath*****%@",filePath);
+    NSFileManager *manager=[NSFileManager defaultManager];
+    
+    sqlite3 *database;
+    
+    BOOL success = NO;
+    
+    if ([manager fileExistsAtPath:filePath])
+    {
+        success =YES;
+    }
+    
+    if (!success)
+    {
+        sqlite3_stmt *createStmt = nil;
+        
+        if(sqlite3_open([filePath UTF8String], &database)== SQLITE_OK)
+        {
+            if(createStmt==nil)
+            {
+                
+                NSString *createtbl_query3=[NSString stringWithFormat:@"CREATE TABLE COMPANY( ID INTEGER PRIMARY KEY   AUTOINCREMENT,ProgramId,ProgramCode,ProgramName,IsActive,SemesterCount,FacultyId,FacultyName,SkillSet,Address1,Address2,City,Mobile,Email,IsActiveCounsler,CourseId,CourseCode,CourseName,IsActiveCourse,Semester,ScheduleId,ScheduleDate,StartTime,EndTime,RoomNumber,Status,Remarks)"];
+                
+                NSString *createtbl_queryFacTbl=[NSString stringWithFormat:@"CREATE TABLE FACTBL( ID INTEGER PRIMARY KEY   AUTOINCREMENT,FacultyId,FacultyName,SkillSet,Address1,Address2,City,Mobile,Email,IsActiveCounsler)"];
+                
+                NSString *createtbl_queryScheduleTbl=[NSString stringWithFormat:@"CREATE TABLE STBL( ID INTEGER PRIMARY KEY   AUTOINCREMENT,ScheduleId,ScheduleDate,StartTime,EndTime,FacultyId,FacultyName,ProgramId,ProgramCode,Semester,CourseId,CourseCode,RoomNumber,Status,Remarks)"];
+                
+                NSString *createtbl_queryNewsTbl=[NSString stringWithFormat:@"CREATE TABLE NEWS( ID INTEGER PRIMARY KEY   AUTOINCREMENT,NewsId,NewsDateTime,NewsDate,NewsHeading,NewsDescription,IsActive,ProgramId,Semester)"];
+                
+                if ((sqlite3_prepare_v2(database, [createtbl_query3 UTF8String], -1, &createStmt, NULL) != SQLITE_OK)&&(sqlite3_prepare_v2(database, [createtbl_queryFacTbl UTF8String], -1, &createStmt, NULL) != SQLITE_OK)&&(sqlite3_prepare_v2(database, [createtbl_queryScheduleTbl UTF8String], -1, &createStmt, NULL) != SQLITE_OK)&&(sqlite3_prepare_v2(database, [createtbl_queryNewsTbl UTF8String], -1, &createStmt, NULL) != SQLITE_OK)
+                    )
+                {
+                    return NO;
+                }
+                else
+                {
+                    sqlite3_exec(database, [createtbl_query3 UTF8String], NULL, NULL, NULL);
+                    sqlite3_exec(database, [createtbl_queryFacTbl UTF8String], NULL, NULL, NULL);
+                    sqlite3_exec(database, [createtbl_queryScheduleTbl UTF8String], NULL, NULL, NULL);
+                    sqlite3_exec(database, [createtbl_queryNewsTbl UTF8String], NULL, NULL, NULL);
+                    NSLog(@"Base table  Created...COMPANY & FACTBL & ScheduleTbl & News Tbl");
+                    
+                    [self getCourse];
+
+                }
+            }
+        }
+        
+    }
+    return YES;
+}
+
+
+
+
+
+
+ if (success) {
+                 
+                 
+                 NSArray *array=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                 NSString *filePath=[array objectAtIndex:0];
+                 filePath =[filePath stringByAppendingPathComponent:DataBaseName];
+                 
+                 //NSLog(@"get db Path :%@",filePath);
+                 
+                 
+                 sqlite3 *database;
+                 sqlite3_stmt *stmt = nil;
+                 
+                 if (sqlite3_open([filePath UTF8String], &database) == SQLITE_OK) {
+                     
+                     
+                     if(stmt == nil)
+                     {
+                         
+                         for ( int i = 0; i < DataArry.count; i++)
+                         {
+                             
+                             NSString *strCourseCode = [CourseCode objectAtIndex:i];
+                             NSString *strCourseId = [CourseId objectAtIndex:i];
+                             NSString *strCourseName = [CourseName objectAtIndex:i];
+                             NSString *strIsActive = [IsActive objectAtIndex:i];
+                             NSString *strProgramCode = [ProgramCode objectAtIndex:i];
+                             NSString *strProgramId = [ProgramId objectAtIndex:i];
+                             NSString *strSemester = [Semester objectAtIndex:i];
+                           
+                             NSString *insert_qry = [NSString stringWithFormat:@"INSERT INTO COMPANY(CourseCode,CourseId,CourseName,IsActive,ProgramCode,ProgramId,Semester) values (\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")",strCourseCode,strCourseId,strCourseName,strIsActive,strProgramCode,strProgramId,strSemester];
+                             
+                             
+                             if (sqlite3_prepare_v2(database, [insert_qry UTF8String], -1, &stmt, NULL) != SQLITE_OK) {
+                                 NSLog(@"Not insert");
+                                 
+                             }
+                             
+                             else {
+                                 
+                                 sqlite3_exec(database, [insert_qry UTF8String], NULL, NULL, NULL);
+                                 
+                                 
+                                 NSLog(@"inserted..:%d",i);
+                                 
+                             }
+                             
+                             
+                             
+                         }
+                         
+                         
+                     }
+                 }
+                 
+                 else {
+                     // Even though the open failed, call close to properly clean up resources.
+                     sqlite3_close(database);
+                     NSAssert1(0, @"Failed to open database with message '%s'.", sqlite3_errmsg(database));
+                     // Additional error handling, as appropriate...
+                 }
+             }
+            
