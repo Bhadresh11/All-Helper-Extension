@@ -1,0 +1,73 @@
+        NSMutableArray *ToCopyArrName = [[NSMutableArray alloc] initWithArray:FromCopyArryName copyItems:YES];
+     
+     
+     
+     
+        //Filering Array Using Segment
+
+- (IBAction)segmentSelect:(id)sender
+{
+    if (workOutMasterArray.count == 0)
+    {
+        return;
+    }
+    UISegmentedControl *seg = (UISegmentedControl *)sender;
+    
+    if (seg.selectedSegmentIndex == 0)
+    {
+        NSLog(@"all Pressed");
+        [workOutArray removeAllObjects];
+        workOutArray = workOutMasterArray;
+        [tblView reloadData];
+    }
+    else if (seg.selectedSegmentIndex == 1)
+    {
+        NSLog(@"completed pressed");
+        [self  SelectIndexFilterdData:@"1"];
+
+    }
+    else if (seg.selectedSegmentIndex == 2)
+    {
+        NSLog(@"Pending ride pressed");
+        [self  SelectIndexFilterdData:@"2"];
+
+    }
+    else if (seg.selectedSegmentIndex == 3)
+    {
+        NSLog(@"Pending Approval pressed");
+        [self  SelectIndexFilterdData:@"3"];
+
+    }
+    
+}
+
+-(void)SelectIndexFilterdData:(NSString *)selectedSegIndex
+{
+    NSLog(@"selected Segment:%@",selectedSegIndex);
+    
+    [workOutArray removeAllObjects];
+    NSString *status;
+    if ([selectedSegIndex isEqualToString:@"1"])
+    {
+        status = @"Finished";
+    }
+    else if ([selectedSegIndex isEqualToString:@"2"])
+    {
+        status = @"StartRide";
+    }
+    else if ([selectedSegIndex isEqualToString:@"2"])
+    {
+        status = @"PendingRequest";
+    }
+    
+    for(int i = 0; i < workOutMasterArray.count; i ++)
+    {
+        NSDictionary *dict = [workOutMasterArray objectAtIndex:i];
+        NSString *statusType = [dict valueForKey:@"status"];
+        if ([statusType isEqualToString:status])
+        {
+            [workOutArray addObject:dict];
+        }
+    }
+    [tblView reloadData];
+}
