@@ -1,0 +1,9 @@
+//pop to back viewCntoler(push seg)
+[self.navigationController popViewControllerAnimated:YES];
+
+//move to perticular ViewController
+UIViewController *prevVC = [self.navigationController.viewControllers objectAtIndex:<n>];
+[self.navigationController popToViewController:prevVC animated:YES];
+
+//pop to root viewController
+[self.navigationController popToRootViewControllerAnimated:YES];
