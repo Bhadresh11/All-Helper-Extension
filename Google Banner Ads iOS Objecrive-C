@@ -1,0 +1,18 @@
+.h File
+
+@class GADBannerView;
+@import GoogleMobileAds;
+
+
+@property(nonatomic, weak) IBOutlet GADBannerView *bannerView;
+
+
+.h
+-(void)viewDidLoad
+{
+    self.bannerView.adUnitID = @BannerAddAppId;
+    self.bannerView.rootViewController = self;
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[kGADSimulatorID];
+    [self.bannerView loadRequest:request];
+}
