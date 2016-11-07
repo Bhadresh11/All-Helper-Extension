@@ -1,0 +1,69 @@
+/*******************Banner Ads****************/
+.h File
+
+@class GADBannerView;
+@import GoogleMobileAds;
+
+
+@property(nonatomic, weak) IBOutlet GADBannerView *bannerView;
+
+
+.h
+-(void)viewDidLoad
+{
+    self.bannerView.adUnitID = @BannerAddAppId;
+    self.bannerView.rootViewController = self;
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[kGADSimulatorID];
+    [self.bannerView loadRequest:request];
+}
+
+
+/*********************Intertita ads ****************************/
+
+.h
+@class GADBannerView;
+@import GoogleMobileAds;
+
+@property(nonatomic, strong) GADInterstitial *interstitial;
+
+
+.M
+//one time display. if first time ads not ready to show then again prepare and display the ads(only one time dispaly)
+- (void)viewDidLoad {
+    // interstitial ads Start
+    [self intersititialAds];    // interstitial ads End
+}
+-(void)intersititialAds
+{
+    // interstitial ads Start
+    self.interstitial =
+    [[GADInterstitial alloc] initWithAdUnitID:@AdInititiGlobalKey];
+    
+    GADRequest *request = [GADRequest request];
+    // Request test ads on devices you specify. Your test device ID is printed to the console when
+    // an ad request is made.
+    request.testDevices = @[ kGADSimulatorID ];
+    [self.interstitial loadRequest:request];
+    [NSTimer scheduledTimerWithTimeInterval:5
+                                     target:self
+                                   selector:@selector(createAndLoadInterstitial)
+                                   userInfo:nil
+                                    repeats:NO];
+    // interstitial ads End
+    
+}
+- (void)createAndLoadInterstitial {
+    
+    
+    if (self.interstitial.isReady) {
+        [self.interstitial presentFromRootViewController:self];
+    } else {
+        NSLog(@"Ad wasn't ready");
+        [NSTimer scheduledTimerWithTimeInterval:5
+                                         target:self
+                                       selector:@selector(createAndLoadInterstitial)
+                                       userInfo:nil
+                                        repeats:NO];
+    }
+}
