@@ -24,6 +24,13 @@ addAttachmentData:mimeType:fileName:
         NSLog(@"dfdsfds:%@",walkerEmail.text);
         [mail setToRecipients:@[walkerEmail.text]];
         
+         
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString  *documentsDirectory = [paths objectAtIndex:0];
+        NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"doorhanger.pdf"];
+        NSData *pdfData = [NSData dataWithContentsOfFile:filePath];
+        [mail addAttachmentData:pdfData mimeType:@"application/pdf" fileName:@"doorhanger.pdf"];
+       
         [self presentViewController:mail animated:YES completion:NULL];
     }
     else
