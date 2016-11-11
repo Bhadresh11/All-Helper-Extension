@@ -1,0 +1,7 @@
+    
+    NSArray *keys = [NSArray arrayWithObjects:@"request",@"t_id",@"listingtype",@"headline",@"abstract",@"listprice",@"mlsnum",@"mls2num",@"CoListingAgentList",@"bedroom",@"bathroom",@"PropertySize",@"lotsize",@"yearbuilt",@"qr_url",@"appointments",@"tour_bgsound",@"show_brochurelinks",@"is_sold",@"status", nil];
+             
+    NSArray *objects = [NSArray arrayWithObjects:@"updatetour",app.globle.onetourdic[@"tid"],@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"", nil];
+           
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+             
