@@ -1,0 +1,25 @@
+//
+//  ProfileVc.h
+//  Assel Express
+//
+//  Created by pc on 11/23/16.
+//  Copyright © 2016 Assel Express. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "myProfileVc.h"
+#import "myReviewVC.h"
+#import "myWishListVc.h"
+#import "myAddressVC.h"
+#import "CarbonKit.h"
+#import "AppDelegate.h"
+
+
+@interface ProfileVc : UIViewController<CarbonTabSwipeNavigationDelegate>
+{
+    NSArray *items;
+    CarbonTabSwipeNavigation *carbonTabSwipeNavigation;
+}
+- (IBAction)btnBackToHome:(id)sender;
+
+@end
