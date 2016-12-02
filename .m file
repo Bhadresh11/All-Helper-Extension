@@ -1,0 +1,125 @@
+//
+//  ProfileVc.m
+//  Assel Express
+//
+//  Created by pc on 11/23/16.
+//  Copyright © 2016 Assel Express. All rights reserved.
+//
+
+#import "ProfileVc.h"
+
+@interface ProfileVc ()
+
+@end
+
+@implementation ProfileVc
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    items = @[ @"My Profile",
+                        @"My Reviews",
+                        @"My WishList",
+                        @"My Address"];
+    
+    carbonTabSwipeNavigation =
+    [[CarbonTabSwipeNavigation alloc] initWithItems:items delegate:self];
+    [carbonTabSwipeNavigation insertIntoRootViewController:self];
+    [self OpenAtIndexController];
+    [self style];
+    
+    
+}
+
+-(void)OpenAtIndexController
+{
+    NSString *strGoToAtIndex = [Global GetSelectedAtIndexMfSideMenu];
+    //My Profile
+    if ([strGoToAtIndex integerValue]==1)
+    {
+        carbonTabSwipeNavigation.currentTabIndex = 0;
+    }
+    //My Reviews
+    else if ([strGoToAtIndex integerValue]==2) {
+        carbonTabSwipeNavigation.currentTabIndex = 1;
+    }
+    //My WishList
+    else if ([strGoToAtIndex integerValue]==3)
+    {
+        carbonTabSwipeNavigation.currentTabIndex = 2;
+    }
+    //My Address
+    else if ([strGoToAtIndex integerValue]==4)
+    {
+        carbonTabSwipeNavigation.currentTabIndex = 3;
+    }
+
+}
+- (void)style {
+    
+    UIColor *color = [UIColor colorWithRed:40.0 / 255 green:146.0 / 255 blue:38.0 / 255 alpha:1];
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = color;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    
+    carbonTabSwipeNavigation.toolbar.translucent = NO;
+    [carbonTabSwipeNavigation setIndicatorColor:color];
+    //[carbonTabSwipeNavigation setTabExtraWidth:30];
+    [carbonTabSwipeNavigation.carbonSegmentedControl setWidth:100 forSegmentAtIndex:0];
+    [carbonTabSwipeNavigation.carbonSegmentedControl setWidth:100 forSegmentAtIndex:1];
+    [carbonTabSwipeNavigation.carbonSegmentedControl setWidth:100 forSegmentAtIndex:2];
+    
+    // Custimize segmented control
+    [carbonTabSwipeNavigation setNormalColor:[color colorWithAlphaComponent:0.6]
+                                        font:[UIFont boldSystemFontOfSize:14]];
+    [carbonTabSwipeNavigation setSelectedColor:color font:[UIFont boldSystemFontOfSize:14]];
+}
+#pragma mark - CarbonTabSwipeNavigation Delegate
+// required
+- (nonnull UIViewController *)carbonTabSwipeNavigation:
+(nonnull CarbonTabSwipeNavigation *)carbontTabSwipeNavigation
+                                 viewControllerAtIndex:(NSUInteger)index {
+    switch (index) {
+        case 0:
+            return [self.storyboard instantiateViewControllerWithIdentifier:@"myProfileVc"];
+            
+        case 1:
+            return [self.storyboard instantiateViewControllerWithIdentifier:@"myReviewVC"];
+            
+        case 2:
+            return [self.storyboard instantiateViewControllerWithIdentifier:@"myWishListVc"];
+            
+        default:
+            return [self.storyboard instantiateViewControllerWithIdentifier:@"myAddressVC"];
+    }
+}
+// optional
+- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
+                 willMoveAtIndex:(NSUInteger)index {
+            self.title = items[index];
+    
+}
+
+- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
+                  didMoveAtIndex:(NSUInteger)index {
+    NSLog(@"Did move at index: %ld", index);
+}
+
+- (UIBarPosition)barPositionForCarbonTabSwipeNavigation:
+(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation {
+    return UIBarPositionTop; // default UIBarPositionTop
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+- (IBAction)btnBackToHome:(id)sender {
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"DashBoard" bundle:nil];
+    UIViewController *initViewController = [storyBoard instantiateInitialViewController];
+    [self presentViewController:initViewController animated:NO completion:nil];
+
+}
+@end
