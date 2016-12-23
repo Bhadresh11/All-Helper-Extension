@@ -1,0 +1,29 @@
+NSArray *btnNameArr = [[NSArray alloc]initWithObjects:@"All",@"course",@"counseler",@"date", nil];
+
+    scrlvw.contentSize = CGSizeMake(btnNameArr.count * 60,scrlvw.frame.size.height);
+    
+     self.automaticallyAdjustsScrollViewInsets = NO;
+     for (int i=0; i<btnNameArr.count; i++) {
+     UIButton*btn1=[[UIButton alloc] init];
+     btn1.tag=i+1;
+     [btn1 setFrame:CGRectMake(0+i*119,0, 120, 30)];
+     [btn1 setTitle: [btnNameArr objectAtIndex:i] forState: UIControlStateNormal];
+     [btn1 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+     [btn1.titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:13.0]];
+     btn1.userInteractionEnabled=YES;
+     [btn1 setBackgroundImage:[UIImage imageNamed:@"btnBlue"] forState:UIControlStateNormal];
+     [btn1 setBackgroundImage:[UIImage imageNamed:@"btnYellow"] forState:UIControlStateSelected];
+     //[btn1 setBackgroundImage:[UIImage imageNamed:@"btnb.png"] forState:UIControlStateNormal];
+     [btn1 addTarget:self action:@selector(btnclick:) forControlEvents:UIControlEventTouchUpInside];
+     //[mix1ary addObject:lbl2.text];
+     [scrlvw addSubview:btn1];
+     
+     if ([btn1.titleLabel.text isEqualToString:@"All"]) {
+     [btn1 setSelected:YES];
+     [btn1 sendActionsForControlEvents:UIControlEventTouchUpInside];
+     }
+}
+-(void)btnclick:(id)Sender
+{
+    NSLog(@"btn Click");
+}
