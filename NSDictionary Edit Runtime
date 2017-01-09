@@ -1,0 +1,7 @@
+
+    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
+    NSDictionary *oldDict = (NSDictionary *)[arrCategoryList objectAtIndex:[sender tag]];
+    [newDict addEntriesFromDictionary:oldDict];
+    [newDict setObject:isFavorit forKey:@"isFavorite"];
+    [arrCategoryList replaceObjectAtIndex:[sender tag] withObject:newDict];
+    
