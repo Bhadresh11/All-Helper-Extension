@@ -1,0 +1,12 @@
+-(void)intit_method
+{
+    [NSTimer scheduledTimerWithTimeInterval:5.0
+                                     target:self
+                                   selector:@selector(targetMethod:)
+                                   userInfo:nil
+                                    repeats:YES];
+}
+-(void)targetMethod:(NSTimer *)timer
+{
+    [WebAPIRequest UserLogin:self email:@"test@ilovedd.info" password:@"123456" udid:@"s2423423423423" is_device_android:@"1"];
+}
