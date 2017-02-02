@@ -1,0 +1,21 @@
+   CNMutableContact *contact = [[CNMutableContact alloc] init];
+    
+    contact.givenName = @"fName";
+    contact.familyName =@"lName";
+    contact.organizationName = @"abc company";
+    UIImage *imgUser =[UIImage imageNamed:@"userImg"];
+    NSData *imgData = UIImageJPEGRepresentation(imgUser, 1.0);
+    [contact setImageData:imgData];
+    NSString *phone = @"8000";
+    CNLabeledValue *homePhone = [CNLabeledValue labeledValueWithLabel:CNLabelHome value:[CNPhoneNumber phoneNumberWithStringValue:phone]];
+    contact.phoneNumbers = @[homePhone];
+    
+    //save contact direct on contact book
+    //CNSaveRequest *request = [[CNSaveRequest alloc] init];
+    //[request addContact:contact toContainerWithIdentifier:nil];
+    
+    //open native ui with contact object
+    CNContactViewController *addContactVC = [CNContactViewController viewControllerForNewContact:contact];
+    addContactVC.delegate                 = self;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addContactVC];
+    [self presentViewController:navController animated:NO completion:nil];
