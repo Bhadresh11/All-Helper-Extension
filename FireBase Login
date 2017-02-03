@@ -1,0 +1,26 @@
+ // set firebase login ..
+
+            [[FIRAuth auth] signInWithEmail:[result1 valueForKey:@"email"]
+                                   password:txt_password.text
+                                 completion:^(FIRUser *user, NSError *error)
+             {
+                 if (user)
+                 {
+                     [SVProgressHUD dismiss];
+
+                     FIRDatabaseReference *rootRef1= [[FIRDatabase database] reference];
+                    [[[rootRef1 child:@"onlineusers"]child:user.uid]setValue:@{@"username": user.email,@"fullname":[result1 valueForKey:@"full_name"],@"user_type":[result1 valueForKey:@"user_type"],                                                                                                     @"user_id":[result1 valueForKey:@"user_id"]                                                                     }];
+                     
+                     NSLog(@"user id %@",user.uid);
+                     NSLog(@"user id %@",user.providerID);
+                     NSLog(@"user id %@",user.displayName);
+                     NSLog(@"user id %@",user.email);
+                     
+                 }
+                 else
+                 {
+                     [SVProgressHUD dismiss];
+
+                     NSLog(@"user id %@",error);
+                 }
+            }];
