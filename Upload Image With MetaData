@@ -1,0 +1,38 @@
+  FIRStorage *storage = [FIRStorage storage];
+     
+     FIRStorageReference *storageRef = [storage reference];
+     
+     FIRStorageReference *riversRef = [storageRef child:strImgPath];
+     NSString *strImgPath = [NSString stringWithFormat:@"images/%@/%@.jpg",strChatChannel,strImageNameWithdate];
+
+    FIRStorageMetadata *metadata = [[FIRStorageMetadata alloc] init];
+    metadata.contentType = @"image/jpeg";
+    NSDictionary *DictMetadata = @{@"date":strdate,
+                                   @"name":[AppState sharedInstance].displayName,
+                                   @"text":[NSString stringWithFormat:@"%@.jpg",strImageNameWithdate],
+                                   @"SenderId":user.uid,
+                                   MediaType:MediaTypeImage};
+    metadata.customMetadata = DictMetadata;
+    
+    uploadTask = [riversRef putData:data
+                                                 metadata:metadata
+                                               completion:^(FIRStorageMetadata *metadata,
+                                                            NSError *error) {
+                                                   if (error != nil) {
+                                                       NSLog(@"fdfdfdfError:%@",error);
+                                                   }
+                                                   else
+                                                    {
+                                                        NSString *strUrl = [NSString stringWithFormat:@"%@",metadata.downloadURL];
+                                                        [[[[[_ref child:@"Chat"]child:strChatChannel] child:@"ChatHistory"] childByAutoId]setValue:@{@"SenderId":[metadata.customMetadata valueForKey:@"SenderId"],
+                                                                                                                                                     @"date":[metadata.customMetadata valueForKey:@"date"],
+                                                                                                                                                     @"name":[metadata.customMetadata valueForKey:@"name"],
+                                                                                                                                                     @"text":[metadata.customMetadata valueForKey:@"text"],
+                                                                                                                                                     @"Url":strUrl,
+                                                                                                                                                     MediaType:MediaTypeImage
+                                                                                                                                                     }];
+
+                                                        
+                                                    }
+                                               }];
+    
