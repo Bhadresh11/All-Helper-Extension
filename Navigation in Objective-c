@@ -1,0 +1,5 @@
+ //set root view controller any viewcontroller to any one
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Dashboard" bundle:[NSBundle mainBundle]];   
+    AppDelegate *appDel =[[UIApplication sharedApplication] delegate];
+    appDel.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"dashBoardNAV"];
+    
