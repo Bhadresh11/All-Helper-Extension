@@ -1,0 +1,9 @@
+NSString *string = @"hello bla bla";
+if ([string rangeOfString:@"bla"].location == NSNotFound) 
+{
+  NSLog(@"string does not contain bla");
+} 
+else 
+{
+  NSLog(@"string contains bla!");
+}
