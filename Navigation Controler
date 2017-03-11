@@ -11,3 +11,11 @@ UIViewController *userpro = [[UIViewController alloc] initWithNibName:@"UIViewCo
 
 //pop to root viewController
 [self.navigationController popToRootViewControllerAnimated:YES];
+
+//Move to perticular vc pass values and create programeticaly navigation bar and display present vc 
+UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"dashBoard" bundle:nil];
+FeedBackVc *control = (FeedBackVc *)[storyboard instantiateViewControllerWithIdentifier:@"FeedBackVcId"];
+control.dictSelectedRowDetails = dictSelectedRowDetails;
+UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:control];
+[self presentViewController:nav animated:YES completion:nil];
+      
