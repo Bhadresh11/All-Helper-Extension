@@ -1,0 +1,6 @@
+  UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.userInfo = remoteMessage.appData;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.alertBody = [remoteMessage.appData valueForKey:@"message"];
+    localNotification.fireDate = [NSDate date];
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
