@@ -1,0 +1,23 @@
+ if (notification.request.content.userInfo[kGCMMessageIDKey])
+    {
+        
+        UINavigationController *currentNAvControllerName = ((UINavigationController*)self.window.rootViewController);
+        UIViewController *currentControllerName = currentNAvControllerName.visibleViewController;
+        if ([currentControllerName isKindOfClass:[ChatScreenViewController class]])
+        {
+            NSLog(@"Chat Open");
+            ChatScreenViewController *control = (ChatScreenViewController *)[DashStoryBoard instantiateViewControllerWithIdentifier:@"chatVC"];
+            control = (ChatScreenViewController*)currentControllerName;
+            NSString *strChatChannelId = [control.MatchUserInfo valueForKey:@"uniqueId"];
+            NSString *notiChatChannelId = notification.request.content.userInfo[@"gcm.notification.ChatChannel"];
+            if (![strChatChannelId isEqualToString:notiChatChannelId])
+            {
+                completionHandler(UNNotificationPresentationOptionAlert);
+            }
+        }
+        else
+        {
+            completionHandler(UNNotificationPresentationOptionAlert);
+        }
+
+    }
