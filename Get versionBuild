@@ -1,0 +1,14 @@
+- (NSString *)versionBuild {
+    
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    
+    NSString *versionBuild = [NSString stringWithFormat: @"v%@", version];
+    
+    if (![version isEqualToString:build]) {
+        
+        versionBuild = [NSString stringWithFormat:@"%@(%@)", versionBuild, build];
+    }
+    
+    return versionBuild;
+}
