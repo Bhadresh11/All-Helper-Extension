@@ -1,5 +1,6 @@
 #import <sqlite3.h>
 
+//    NSString *query = [NSString stringWithFormat:@"select * from (select * from ChatHistroy where Channelid = '%@' ORDER BY chatId DESC limit 50) TmpTbl ORDER BY chatId ASC",ChatChhanel];
 
 -(BOOL)CheckandCreateDatabase
 {
