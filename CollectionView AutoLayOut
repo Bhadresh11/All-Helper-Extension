@@ -1,0 +1,22 @@
+    UICollectionViewFlowLayout *flowLayout;
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    UINib *cellNib = [UINib nibWithNibName:@"CustCollCell" bundle:nil];
+    [collectView registerNib:cellNib forCellWithReuseIdentifier:@"CustCollCell"];
+    flowLayout = (UICollectionViewFlowLayout *)collectView.collectionViewLayout;
+    flowLayout.estimatedItemSize = CGSizeMake(1, 1); //use auto layout for the collection view
+    
+}
+
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    CGSize size = flowLayout.itemSize;
+    size.width = collectView.frame.size.width-16;
+    size.height = size.height *2;
+   
+    return size;
+}
