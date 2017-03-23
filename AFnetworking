@@ -1,3 +1,22 @@
 //set image using URL and PlaceHolder
 #import "UIImageView+AFNetworking.h"
     [ImageVieewName setImageWithURL:[NSURL URLWithString:@"ImagePathString"] placeholderImage:[UIImage imageNamed:@"UserAvtar"]];
+
+//set heder in afnetworking
+
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        [manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [manager.requestSerializer setValue:@"key=AAAA7_Zaxr8:APA91bFHjlOzCtw5GG1PxclSLqODpui0BKiprpBMUN6QxnQ-VrwJKEQW48s8RMm-ykuRxyPXOXqReIDRWz-dLOigZS10SHbYufJTCjb_2aqCfX3r62BuxAsZuhRGXWBH_zGZP3CAEPQb" forHTTPHeaderField:@"Authorization"];
+        [manager.requestSerializer setTimeoutInterval:TimeOutRequest];
+         [manager POST:request parameters:parameter progress:nil success:^(NSURLSessionTask *task, id responseObject)
+         {
+             [self.delegate customURLConnectionDidFinishLoading:self withTag:cTag withResponse:responseObject];
+             
+         }
+              failure:^(NSURLSessionTask *operation, NSError *error)
+         {
+             NSLog(@"Error: %@", error);
+             [self.delegate customURLConnection:self withTag:cTag didFailWithError:error];
+             
+         }];
