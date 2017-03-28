@@ -10,6 +10,9 @@
     CNLabeledValue *homePhone = [CNLabeledValue labeledValueWithLabel:CNLabelHome value:[CNPhoneNumber phoneNumberWithStringValue:phone]];
     contact.phoneNumbers = @[homePhone];
     
+    //Get Contact Lable Name
+     //NSString *strConTypr = [CNLabeledValue localizedStringForLabel:homePhone.label]
+       
     //save contact direct on contact book
     //CNSaveRequest *request = [[CNSaveRequest alloc] init];
     //[request addContact:contact toContainerWithIdentifier:nil];
