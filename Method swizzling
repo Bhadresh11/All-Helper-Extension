@@ -1,0 +1,17 @@
+#import "UIViewController+Log.h"
+@implementation UIViewController (Log)
+    + (void)load {
+        static dispatch_once_t once_token;
+        dispatch_once(&once_token,  ^{
+            SEL viewWillAppearSelector = @selector(viewDidAppear:);
+            SEL viewWillAppearLoggerSelector = @selector(log_viewDidAppear:);
+            Method originalMethod = class_getInstanceMethod(self, viewWillAppearSelector);
+            Method extendedMethod = class_getInstanceMethod(self, viewWillAppearLoggerSelector);
+            method_exchangeImplementations(originalMethod, extendedMethod);
+        });
+    }
+    - (void) log_viewDidAppear:(BOOL)animated {
+        [self log_viewDidAppear:animated];
+        NSLog(@"viewDidAppear executed for %@", [self class]);
+    }
+@end
