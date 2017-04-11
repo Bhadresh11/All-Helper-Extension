@@ -1,0 +1,14 @@
+ -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+  CustCellOffers *cell = (CustCellOffers *)[collectionView dequeueReusableCellWithReuseIdentifier:identifierOffers forIndexPath:indexPath];
+  return cell;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return 5;
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+}
