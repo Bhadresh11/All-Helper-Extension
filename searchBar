@@ -1,0 +1,24 @@
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    [self.displayContentArray removeAllObjects];
+    
+    if([searchText length] == 0){
+        self.isSearch = NO;
+        [self.tableView reloadData];
+        return;
+    }
+    
+    self.isSearch = YES;
+    NSString* firstLetter = [[searchText substringToIndex:1] uppercaseString];
+    NSArray* arrayAtLetter = [self.contactSectionsDictionary objectForKey:firstLetter];
+    for(ContactRecord* record in arrayAtLetter){
+        if([record.LastName length] < [searchText length]){
+            continue;
+        }
+        NSString* lastNameSubstring = [record.LastName substringToIndex:[searchText length]];
+        if([lastNameSubstring caseInsensitiveCompare:searchText] == 0){
+            [self.displayContentArray addObject:record];
+        }
+    }
+    
+    [self.tableView reloadData];
+}
