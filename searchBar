@@ -22,3 +22,8 @@
     
     [self.tableView reloadData];
 }
+
+
+NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF contains [cd] %@", _controller.searchBar.text];
+   
+self.results = [[self.ArrSearchResult valueForKey:@"pName"] filteredArrayUsingPredicate:predicate];
