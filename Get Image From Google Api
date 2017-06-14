@@ -1,0 +1,4 @@
+        NSString *staticMapUrl = UrlPhoto;
+        NSURL *mapUrl = [NSURL URLWithString:[staticMapUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL:mapUrl]];
+      
