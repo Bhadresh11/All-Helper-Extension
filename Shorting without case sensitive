@@ -1,0 +1,5 @@
+ NSSortDescriptor *sortByNameLocal = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+                     NSArray *sortDescriptorsLocal = [NSArray arrayWithObject:sortByNameLocal];
+                     NSArray *sortedArrayLocal = [arrLocalContactList sortedArrayUsingDescriptors:sortDescriptorsLocal];
+                     
+                     arrLocalContactList = [[NSMutableArray alloc]initWithArray:sortedArrayLocal];
