@@ -1,0 +1,11 @@
+// Define identifier
+let notificationName = Notification.Name("NotificationIdentifier")
+
+// Register to receive notification
+NotificationCenter.default.addObserver(self, selector: #selector(YourClassName.methodOfReceivedNotification), name: notificationName, object: nil)
+
+// Post notification
+NotificationCenter.default.post(name: notificationName, object: nil)
+
+// Stop listening notification
+NotificationCenter.default.removeObserver(self, name: notificationName, object: nil)
