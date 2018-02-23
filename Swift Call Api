@@ -1,0 +1,30 @@
+
+     let RequestUrl = “url”
+            let parameters: [String: AnyObject] = ["latitude": UserDefaults.standard.value(forKey: "latitude") as AnyObject , "longitude" : UserDefaults.standard.value(forKey: "longitude") as  AnyObject ]
+            
+            let headers : HTTPHeaders = GlobalMethod().getHaderParam(isDefaultHader: true)
+            print("headers",headers);
+            AFWrapper.requestPOSTURL(RequestUrl, params: parameters as [String : AnyObject], headers: headers, success: { (JSON) in
+                if LogEnable == 1{ DDLogVerbose("API -->locate-beacon-list Response:-->\(JSON)")}
+
+                let ErrorCode : Int = JSON["status"].intValue
+                print(ErrorCode)
+                SVProgressHUD.dismiss()
+                if(ErrorCode == 1)
+                {
+
+                    print("RESPONSE: \(JSON.object)")
+                    let ResponseData = JSON.object as! Dictionary <String, Any>
+                    print(ResponseData)
+                   
+                }
+                else
+                {
+//error
+                }
+            })
+            {(Error) -> Void in
+                SVProgressHUD.dismiss()
+                print("ERROR RESPONSE: \(Error)")
+            }
+        
