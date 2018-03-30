@@ -1,0 +1,28 @@
+#pragma mark Get UserAddress
+-(void) getAddressFromLatLon:(NSString *)strLatttude andLongitute:(NSString *)strLongitude
+{
+    CLLocation *bestLocation =[[CLLocation alloc]initWithLatitude:[strLatttude floatValue] longitude:[strLongitude floatValue]];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init] ;
+    [geocoder reverseGeocodeLocation:bestLocation
+                   completionHandler:^(NSArray *placemarks, NSError *error)
+     {
+         if (error){
+             NSLog(@"Geocode failed with error: %@", error);
+             return;
+         }
+         CLPlacemark *placemark = [placemarks objectAtIndex:0];
+         NSString *placename =[[NSString alloc]init];
+
+         NSLog(@"addressDictionary --%@",[placemark.addressDictionary valueForKey:@"FormattedAddressLines"]);
+         NSLog(@"%@",placemark.addressDictionary);
+        if (![placemark.addressDictionary valueForKey:@"City"] && ![placemark.addressDictionary valueForKey:@"State"]) {
+             
+             placename = [NSString stringWithFormat:@"%@",[placemark.addressDictionary valueForKey:@"Name"] ];
+         }
+         else{
+             placename = [NSString stringWithFormat:@"%@,%@",[placemark.addressDictionary valueForKey:@"City"], [placemark.addressDictionary valueForKey:@"State"]];
+         }
+         _strPlacename = placename ;
+         [self updtaeLocationWithPlaceName:placename];
+     }];
+}
