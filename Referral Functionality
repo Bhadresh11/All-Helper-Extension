@@ -1,0 +1,44 @@
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+   
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ABC://"]]) {
+        NSDictionary *dictCustom = [[NSDictionary alloc]init];
+        NSLog(@"url recieved: %@", url);
+        NSLog(@"query string: %@", [url query]);
+        NSLog(@"host: %@", [url host]);
+        NSLog(@"url path: %@", [url path]);
+        dictCustom = [self parseQueryString:[url query]];
+        NSLog(@"query dict: %@", dictCustom);
+        NSUserDefaults *defUser = [NSUserDefaults standardUserDefaults];
+        NSMutableDictionary*  registerDict = [defUser valueForKey:kReferralKey];
+        
+        if(registerDict.count == 0) {
+            [defUser removeObjectForKey:kReferralKey ];
+            [defUser setObject:[dictCustom mutableCopy] forKey:kReferralKey];
+        }
+    }
+    
+    return NO;
+}
+- (NSDictionary *)parseQueryString:(NSString *)query {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:6] ;
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    
+    for (NSString *pair in pairs)
+        {
+        NSArray *elements = [pair componentsSeparatedByString:@"="];
+        NSString *key = [[elements objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *val = [[elements objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        [dict setObject:val forKey:key];
+        }
+    return dict;
+}
+
+
+NOTE: go to -> info -> URL types
+add 
+identifire abc.abc.com
+URL schemes ABC
+Role -> viewer
