@@ -1,0 +1,28 @@
+-(void)scrollUpToHide
+{
+    NSLog(@"scrollUpToHide");
+    contNavi.constant = 0;
+    contContainView.constant = contContainView.constant +64;
+    //animation
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.view layoutIfNeeded];}];
+    [UIView transitionWithView:_viewNavigation
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        _viewNavigation.hidden = YES;
+                    }
+                    completion:NULL];
+   
+}
+-(void)scrollDownToShow
+{
+    NSLog(@"scrollDownToShow");
+    contNavi.constant = 64;
+    contContainView.constant = contContainView.constant -64;
+    
+    //animation
+    [UIView animateWithDuration:0.5 animations:^{
+        _viewNavigation.hidden = NO;
+        [self.view layoutIfNeeded];}];
+}
