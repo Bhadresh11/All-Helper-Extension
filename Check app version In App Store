@@ -1,0 +1,45 @@
+ -(void)CheckVersion
+{
+    if ([[Reachability reachabilityForInternetConnection]currentReachabilityStatus] == NotReachable)
+    {
+    }
+    else
+    {
+        //force upgrade an application
+        NSDictionary* infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString* appID = infoDictionary[@"CFBundleIdentifier"];
+        NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?bundleId=%@", appID]];
+        NSData* data = [NSData dataWithContentsOfURL:url];
+        NSDictionary* lookup = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        if ([lookup[@"resultCount"] integerValue] == 1){
+            NSString* appStoreVersion = lookup[@"results"][0][@"version"];
+            NSString* currentVersion = infoDictionary[@"CFBundleShortVersionString"];
+            if (![appStoreVersion isEqualToString:currentVersion]){
+                NSLog(@"Need to update [%@ != %@]", appStoreVersion, currentVersion);
+                [self AppUpdatedPoup:currentVersion AppName:lookup[@"results"][0][@"trackCensoredName"]];
+            }
+        }
+    }
+}
+- (void)AppUpdatedPoup:(NSString *)VersionNum AppName:(NSString* )Appname
+{
+    NSString * strMsg = [NSString stringWithFormat:@"A new version of %@ is available. Please update now.",Appname];
+    UIWindow* topWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    topWindow.rootViewController = [UIViewController new];
+    topWindow.windowLevel = UIWindowLevelAlert + 1;
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Update Available" message:strMsg preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Update" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        topWindow.hidden = YES;
+        NSString *iTunesLink = @"Entre your Appstore url(when you redirect user)";
+        UIApplication *application = [UIApplication sharedApplication];
+        NSURL *URL = [NSURL URLWithString:iTunesLink];
+        [application openURL:URL options:@{} completionHandler:^(BOOL success) {
+            if (success) {
+                NSLog(@"Opened url");
+            }
+        }];
+    }]];
+    [topWindow makeKeyAndVisible];
+    [topWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+}
