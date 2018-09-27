@@ -1,0 +1,1 @@
+ NSString *strUpdateUser = [NSString stringWithFormat:@"update UserInfo set chat_object = '%@',chat_channel = '%@',lastChattedTime = CASE WHEN lastChattedTime='0.0' THEN %@ WHEN lastChattedTime !='0.0' THEN lastChattedTime ELSE lastChattedTime END  where qUserID = '%@' ",base64Str,ChatDialog.ID,timestamp,groupId];
