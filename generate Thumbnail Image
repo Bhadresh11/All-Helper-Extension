@@ -1,0 +1,17 @@
+-(void)generateThumbnailImage:(NSURL *)filePath
+{
+    AVURLAsset *sourceAsset = [AVURLAsset URLAssetWithURL:filePath options:nil];
+    CMTime duration = sourceAsset.duration;
+    AVAssetImageGenerator* generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:sourceAsset];
+    generator.appliesPreferredTrackTransform = YES;
+    //Get the 1st frame 10 seconds in
+    int frameTimeStart = 10;
+    int frameLocation = 1;
+    //Snatch a frame
+    CGImageRef frameRef = [generator copyCGImageAtTime:CMTimeMake(frameTimeStart,frameLocation) actualTime:nil error:nil];
+    UIImage * img =[UIImage imageWithCGImage:frameRef];
+    videothemimage = [NSString stringWithFormat:@"%@thum.jpg",[self GetUUID]];
+    NSString *fileSavePath = [self documentsPath:videothemimage];
+    //fileSavePath = [fileSavePath stringByAppendingString:@"thum.jpg"];
+    [UIImageJPEGRepresentation(img, 0.7) writeToFile:fileSavePath atomically:YES];
+}
