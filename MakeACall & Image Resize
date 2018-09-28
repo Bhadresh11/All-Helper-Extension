@@ -1,0 +1,35 @@
+- (BOOL)canMakeACall {
+    BOOL canMakeACall = false;
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
+        // Check if iOS Device supports phone calls
+        CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
+        CTCarrier *carrier = [netInfo subscriberCellularProvider];
+        NSString *mnc = [carrier mobileNetworkCode];
+        // User will get an alert error when they will try to make a phone call in airplane mode.
+        if (([mnc length] == 0)) {
+            // Device cannot place a call at this time.  SIM might be removed.
+        } else {
+            // iOS Device is capable for making calls
+            canMakeACall = true;
+        }
+    } else {
+        // iOS Device is not capable for making calls
+    }
+    return canMakeACall;
+}
+
+- (UIImage *)resizedImageFromImage:(UIImage *)image {
+    
+    CGFloat largestSide = image.size.width > image.size.height ? image.size.width : image.size.height;
+    CGFloat scaleCoefficient = largestSide / 560.0f;
+    CGSize newSize = CGSizeMake(image.size.width / scaleCoefficient, image.size.height / scaleCoefficient);
+    
+    UIGraphicsBeginImageContext(newSize);
+    
+    [image drawInRect:(CGRect){0, 0, newSize.width, newSize.height}];
+    UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
+}
