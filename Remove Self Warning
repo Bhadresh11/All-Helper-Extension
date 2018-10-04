@@ -1,2 +1,2 @@
-Remove self -> warring in obj c
+Remove self -> warning in obj c
 CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF set NO
