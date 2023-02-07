@@ -1,0 +1,49 @@
+import Foundation
+
+struct UserDefaultsConfig {
+    enum Key: String {
+        case app_stage
+    }
+    
+    static let preferences = UserDefaults.standard
+    
+    static func set<T: Encodable> (_ value: T?, forKey key: Key) {
+        self.set(value, forKey: key.rawValue)
+    }
+    
+    static func set<T: Encodable> (_ value: T?, forKey key: String) {
+        guard let value = value else {
+            removeValue(forKey: key)
+            return
+        }
+        
+        do {
+            let data = try JSONEncoder().encode(value)
+            preferences.setValue(data, forKey: key)
+            preferences.synchronize()
+        } catch {
+            Logger.err(error)
+        }
+    }
+    
+    static func get<T: Decodable>(forKey key: Key) -> T? {
+        return self.get(forKey: key.rawValue)
+    }
+    
+    static func get<T: Decodable>(forKey key: String) -> T? {
+        guard let data = preferences.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(T.self, from: data)
+    }
+    
+    static func removeValue(forKey key: Key) {
+        preferences.removeObject(forKey: key.rawValue)
+    }
+    
+    static func removeValue(forKey key: String) {
+        preferences.removeObject(forKey: key)
+    }
+    
+    static func removeAllInfo() {
+        self.removeValue(forKey: .app_stage)
+    }
+}
