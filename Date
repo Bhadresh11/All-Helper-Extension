@@ -1,0 +1,42 @@
+
+import Foundation
+
+extension Date {
+    func getString(dateFormat: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        dateFormatter.locale = Locale(identifier: DateFormatStrings.localeId)
+        return dateFormatter.string(from: self)
+    }
+    
+    func getTimeStampFromDate() -> Int? {
+        let refDate = Date().toLocalTime()
+        let timestamp = self.timeIntervalSince(refDate)
+        return Int(timestamp)
+    }
+    
+    // Convert local time to UTC (or GMT)
+    func toGlobalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = -TimeInterval(timezone.secondsFromGMT(for: self))
+        return Date(timeInterval: seconds, since: self)
+    }
+    
+    // Convert UTC (or GMT) to local time
+    func toLocalTime() -> Date {
+       let timezone = TimeZone.current
+       let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
+       return Date(timeInterval: seconds, since: self)
+    }
+    
+    func dayDifferenceText() -> String
+    {
+        let calendar = Calendar.current
+        if calendar.isDateInYesterday(self) { return "Yesterday" }
+        else if calendar.isDateInToday(self) { return "Today" }
+        else if calendar.isDateInTomorrow(self) { return "Tomorrow" }
+        else {
+            return ""
+        }
+    }
+}
