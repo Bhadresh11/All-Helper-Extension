@@ -1,0 +1,76 @@
+import Foundation
+import UIKit
+
+
+extension UIView {
+    
+    func loadFromNib() -> UIView {
+        let bundle = Bundle(for: type(of: self))
+        let nibName = type(of: self).description().components(separatedBy: ".").last!
+        let nib = UINib(nibName: nibName, bundle: bundle)
+        let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
+        return view
+    }
+    
+    func backgroundViewShadow() {
+        self.layer.shadowRadius = 4.0
+        self.layer.cornerRadius = 8.0
+        self.layer.shadowOpacity = 1
+        self.layer.shadowOffset = .zero
+        self.layer.shadowColor = ThemeManager.shared.color(color: .blue100Color)?.cgColor
+    }
+    
+    func slotBookingViewShadow() {
+        self.layer.shadowRadius = 4.0
+        self.layer.cornerRadius = 12.0
+        self.layer.shadowOpacity = 1
+        self.layer.shadowOffset = .zero
+        self.layer.shadowColor = ThemeManager.shared.color(color: .blue100Color)?.cgColor
+        self.layer.borderWidth = 0.0
+        self.backgroundColor = .white
+    }
+    
+    func selectedSlotViewShadow() {
+        self.layer.shadowRadius = 4.0
+        self.layer.cornerRadius = 12.0
+        self.layer.shadowOpacity = 1
+        self.layer.shadowOffset = .zero
+        self.layer.shadowColor = ThemeManager.shared.color(color: .blue100Color)?.cgColor
+        self.layer.borderWidth = 2.0
+        self.layer.borderColor = ThemeManager.shared.color(color: .selectedSlotBorder)?.cgColor
+        self.backgroundColor = ThemeManager.shared.color(color: .selectedSlotBackground)
+    }
+    
+    func addBottomShadow() {
+        layer.masksToBounds = false
+        layer.shadowRadius = 4.0
+        layer.shadowOpacity = 1.0
+        layer.shadowColor = ThemeManager.shared.color(color: .blue100Color)?.cgColor
+        layer.shadowOffset = CGSize(width: 0 , height: 2.0)
+    }
+    
+    func shortlistHintCollectionCellShadow() {
+        layer.shadowRadius = 8.0
+        layer.shadowOpacity = 1.0
+        layer.shadowColor = UIColor(red: 0.345, green: 0.327, blue: 0.458, alpha: 0.08).cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 4)
+        layer.cornerRadius = 8.0
+        layer.borderColor = ThemeManager.shared.color(color: .blue100Color)?.cgColor
+        layer.borderWidth = 0.5
+        
+    }
+    
+    func addViewBorder(radius: CGFloat = 8.0, widht: CGFloat = 1.0, color: UIColor = .gray){
+        layer.cornerRadius = radius
+        layer.borderWidth = widht
+        layer.borderColor = color.cgColor
+    }
+    
+    func applyBorderwithRadius(radius: CGFloat = 8, color: UIColor? = ThemeManager.shared.color(color: .blue100Color), borderWidth: CGFloat = 0.5) {
+        
+        layer.cornerRadius = radius
+        layer.borderColor = color?.cgColor
+        layer.borderWidth = borderWidth
+        self.backgroundColor = ThemeManager.shared.color(color: .viewBackground)
+    }
+}
