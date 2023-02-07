@@ -1,0 +1,42 @@
+import Foundation
+
+class DocumentPickerUtil {
+    static let shared = DocumentPickerUtil()
+    
+    func isFileSizeExceeds(_ fileUrl: URL?, maxSizeMB: Float) -> Bool {
+        guard let fileUrl = fileUrl else { return true }
+        let fileSize = getFileSizeFromURL(fileUrl)
+        return allowToSendFile(fileSize, maxSizeMB)
+    }
+    
+    private func getFileSizeFromURL(_ fileUrl: URL) -> String {
+        var fileSizeValue: UInt64 = 0
+        do {
+            let fileAttribute: [FileAttributeKey : Any] = try FileManager.default.attributesOfItem(atPath: fileUrl.path)
+            
+            if let fileNumberSize: NSNumber = fileAttribute[FileAttributeKey.size] as? NSNumber {
+                fileSizeValue = UInt64(truncating: fileNumberSize)
+                
+                let byteCountFormatter: ByteCountFormatter = ByteCountFormatter()
+                byteCountFormatter.countStyle = ByteCountFormatter.CountStyle.file
+
+                byteCountFormatter.allowedUnits = ByteCountFormatter.Units.useMB
+                let fileSize = byteCountFormatter.string(fromByteCount: Int64(fileSizeValue))
+                Logger.log(fileSize)
+                return fileSize
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        return ""
+    }
+    
+    private func allowToSendFile(_ fileSize: String, _ maxSize: Float) -> Bool {
+        let strSize = fileSize.replacingOccurrences(of: " MB", with: "")
+        if let intSize = Float(strSize), intSize > maxSize {
+            return false
+        } else {
+            return true
+        }
+    }
+}
